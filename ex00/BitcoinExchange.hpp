@@ -6,7 +6,7 @@
 /*   By: lkavalia <lkavalia@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 10:57:23 by lkavalia          #+#    #+#             */
-/*   Updated: 2023/06/12 19:07:40 by lkavalia         ###   ########.fr       */
+/*   Updated: 2023/06/14 14:01:01 by lkavalia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,58 @@
 # include	<map>
 # include	<string>
 # include	<iostream>
+# include	<sstream>
 # include	<cstdlib>
 # include	<fstream>
+# include	<iomanip>
+# include	<exception>
+# include	<algorithm>
 
 class	BitcoinExchange
 {
 	public:
+		//Canonical form 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		BitcoinExchange(void);
-		BitcoinExchange(char *filename);
-		BitcoinExchange(const BitcoinExchange& other);
+		BitcoinExchange(std::string filename);
+		~BitcoinExchange(void);
 		
-		BitcoinExchange&	operator=(const BitcoinExchange& other);
+		//Member functions 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		void	evaluate(std::string filename2);
+		
+		//Exceptions 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		class	BadInput: public std::exception
+		{
+		public:
+			virtual const char	*what() const throw();			
+		};
+		
+		class	WhatIsBitcoin: public std::exception
+		{
+		public:
+			virtual const char	*what() const throw();			
+		};
+
+		class	DayDoesNotExist: public std::exception
+		{
+		public:
+			virtual const char	*what() const throw();			
+		};
+
+		class	NegativeNumber: public std::exception
+		{
+		public:
+			virtual	const char	*what() const throw();
+		};
+		
+		class	NumberIsToLarge: public std::exception
+		{
+		public:
+			virtual const char	*what() const throw();
+		};
 	private:
-		std::map<std::string, float>	_database;
+		BitcoinExchange(const BitcoinExchange& other);
+		BitcoinExchange&	operator=(const BitcoinExchange& other);
+		std::map<std::string, double>	_database;
 };
 
 //Colors	===========================
