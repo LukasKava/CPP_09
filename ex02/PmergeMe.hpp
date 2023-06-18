@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lkavalia <lkavalia@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: lkavalia <lkavalia@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/15 18:54:59 by lkavalia          #+#    #+#             */
-/*   Updated: 2023/06/15 22:00:20 by lkavalia         ###   ########.fr       */
+/*   Updated: 2023/06/18 05:19:11 by lkavalia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,12 @@
 # include	<climits>
 # include	<cstdlib>
 # include	<iostream>
+# include	<algorithm>
 # include	<deque>
-# include	<list>
+# include	<vector>
+# include	<sys/time.h>
+# include	<iomanip>
+# include	<time.h>
 
 class	PmergeMe
 {
@@ -31,12 +35,21 @@ class	PmergeMe
 		
 		//Member functions	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		void	fillContainers(int& argc, char **argv);
-		void	printContainers(void);
+		double	getTime(void);
+		void	printContainers(int decider_before_after, int decide_deque_or_vector);
+
+		//Templated functions	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		template	<typename	T>
+		void	merge(T&	container, int front, int middle, int back);
+		template	<typename	T>
+		void	insertionSort(T& container, int front, int back);
+		template	<typename	T>
+		void	mergeInsertSort(T& container, int f, int b);
 	private:
 		PmergeMe(const PmergeMe& other);
 		PmergeMe&	operator=(const PmergeMe& other);
-		std::deque<int>	_nbr_arr_deque;
-		std::list<int>	_nbr_arr_list;
+		std::deque<int>		_nbr_arr_deque;
+		std::vector<int>	_nbr_arr_vector;
 };
 
 //Colors	===========================

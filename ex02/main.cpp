@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lkavalia <lkavalia@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: lkavalia <lkavalia@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/15 18:54:52 by lkavalia          #+#    #+#             */
-/*   Updated: 2023/06/15 22:03:32 by lkavalia         ###   ########.fr       */
+/*   Updated: 2023/06/16 15:25:06 by lkavalia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
