@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RPN.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lkavalia <lkavalia@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lkavalia <lkavalia@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/15 10:06:03 by lkavalia          #+#    #+#             */
-/*   Updated: 2023/06/15 11:33:51 by lkavalia         ###   ########.fr       */
+/*   Updated: 2023/06/26 05:12:28 by lkavalia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include <stack>
 # include <string>
 # include <vector>
+# include <cstdlib>
+# include <stdexcept>
 # include <iostream>
 
 class	ReversePolishNotation

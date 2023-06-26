@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RPN.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lkavalia <lkavalia@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*   By: lkavalia <lkavalia@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/15 10:06:06 by lkavalia          #+#    #+#             */
-/*   Updated: 2023/06/15 11:45:41 by lkavalia         ###   ########.fr       */
+/*   Updated: 2023/06/26 05:16:28 by lkavalia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,11 @@ static int	performCalculation(int a, int b, char& it)
 	else if (it == '-')
 		return (b - a);
 	else if (it == '/')
+	{
+		if (a == 0)
+			throw std::logic_error("ERROR: Division by 0 is not possible!");
 		return (b / a);
+	}
 	return (b * a);
 }
 
@@ -71,7 +75,12 @@ ReversePolishNotation::ReversePolishNotation(std::string input)
 			_calculations.pop();
 			b = _calculations.top();
 			_calculations.pop();
-			_calculations.push(performCalculation(a, b, *it));
+			try {_calculations.push(performCalculation(a, b, *it));}
+			catch (std::logic_error &e)
+			{
+				std::cerr << RED << e.what() << BLANK << std::endl;
+				exit(-1);
+			}
 		}
 		else if (checkNumber(*it) == true)
 			_calculations.push(*it - '0');
