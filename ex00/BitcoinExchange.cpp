@@ -6,7 +6,7 @@
 /*   By: lkavalia <lkavalia@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 18:12:54 by lkavalia          #+#    #+#             */
-/*   Updated: 2023/06/14 13:59:33 by lkavalia         ###   ########.fr       */
+/*   Updated: 2023/06/26 06:24:56 by lkavalia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ BitcoinExchange::BitcoinExchange(std::string  filename)
 		ss.clear();
 		_database.insert(std::pair<std::string, float>(date, exchange_rate_f));
 	}
+	_smallest_possible_date = _database.begin()->first;
+	_largest_possible_date = (--_database.end())->first;
 }
 
 BitcoinExchange::BitcoinExchange(const BitcoinExchange& other)
@@ -60,11 +62,7 @@ BitcoinExchange::BitcoinExchange(const BitcoinExchange& other)
 
 BitcoinExchange&	BitcoinExchange::operator=(const BitcoinExchange& other)
 {
-	if (this->_database.empty() == false)
-		this->_database.clear();
-	std::map<std::string, double>::iterator	it;
-	for (it == other._database.begin(); it != other._database.end(); it++)
-		this->_database.insert(*it);
+	(void)other;
 	return (*this);
 }
 
@@ -75,15 +73,17 @@ static void	outputTheValue(std::map<std::string, double>::iterator& it, std::str
 	std::stringstream	ss;
 	double				stored_ammount_double;
 	double				exchange_rate = it->second;
+	long double			result;
 
 	ss << stored_ammount_str;
 	ss >> stored_ammount_double;
 	ss.clear();
 
-	std::cout << date << " => " << stored_ammount_double << " = " << stored_ammount_double * exchange_rate << std::endl;
+	result = exchange_rate * stored_ammount_double;
+	std::cout << date << " => " << stored_ammount_double << " = " << result << std::endl;
 }
 
-static void	checkDate(std::string& date)
+static void	checkDate(std::string& date, std::string& smalles_possible_date)
 {
 	if (std::count(date.begin(), date.end(), '-') != 2)
 		throw	BitcoinExchange::BadInput();
@@ -135,11 +135,13 @@ static void	checkDate(std::string& date)
 			(arr_int_date[0] % 100 == 0 && arr_int_date[0] % 400 != 0)))
 			throw	BitcoinExchange::DayDoesNotExist();
 	}
+	if (date < smalles_possible_date)
+		throw	BitcoinExchange::DateIsTooLittle();
 }
 
-static bool	dateTestsOk(std::string date)
+static bool	dateTestsOk(std::string date, std::string& smallest_possible_date)
 {
-	try { checkDate(date);}
+	try { checkDate(date, smallest_possible_date);}
 	catch (BitcoinExchange::BadInput& e)
 	{
 		std::cout << e.what() << date << std::endl;
@@ -151,6 +153,11 @@ static bool	dateTestsOk(std::string date)
 		return (false);
 	}
 	catch (BitcoinExchange::DayDoesNotExist& e)
+	{
+		std::cout << e.what() << date << std::endl;
+		return (false);
+	}
+	catch (BitcoinExchange::DateIsTooLittle& e)
 	{
 		std::cout << e.what() << date << std::endl;
 		return (false);
@@ -181,7 +188,7 @@ static void	checkCoins(std::string& value)
 	ss >> ammount;
 
 	if (ammount > 1000)
-		throw	BitcoinExchange::NumberIsToLarge();	
+		throw	BitcoinExchange::NumberIsTooLarge();	
 }
 
 static bool	storedAmmountTestsOk(std::string& stored_ammount)
@@ -197,7 +204,7 @@ static bool	storedAmmountTestsOk(std::string& stored_ammount)
 		std::cout << e.what() << std::endl;
 		return (false);
 	}
-	catch (const BitcoinExchange::NumberIsToLarge& e)
+	catch (const BitcoinExchange::NumberIsTooLarge& e)
 	{
 		std::cout << e.what() << std::endl;
 		return (false);
@@ -234,27 +241,31 @@ void	BitcoinExchange::evaluate(std::string filename2)
 			std::cout << "ERROR: bad input => " << line << std::endl;
 		else
 		{
-			if (dateTestsOk(line.substr(0, line.find("|"))) == true)
+			if (dateTestsOk(line.substr(0, line.find("|")), _smallest_possible_date) == true)
 			{
 				value = line.substr(line.find("|") + 1, line.size() - 1);
 				if (storedAmmountTestsOk(value) == true)
 				{
 					date = line.substr(0, line.find("|") - 1);
 					std::map<std::string, double>::iterator it;
+					bool									marked = false;
 					for (it = _database.begin(); it != _database.end(); it++)
 					{
 						if (it->first == date)
 						{
 							outputTheValue(it, date, value);
+							marked = true;
 							break;
 						}
 						else if (it->first > date)
 						{
-							it--;
-							outputTheValue(it, date, value);
+							outputTheValue(--it, date, value);
+							marked = true;
 							break;
 						}
 					}
+					if (marked == false && it == _database.end()-- && date > (--it)->first)
+						outputTheValue(it, date, value);
 				}
 			}
 		}
@@ -278,7 +289,7 @@ const char 	*BitcoinExchange::BadInput::what() const throw()
 	return ("ERROR: Bad input => ");
 }
 
-const char	*BitcoinExchange::NumberIsToLarge::what() const throw()
+const char	*BitcoinExchange::NumberIsTooLarge::what() const throw()
 {
 	return ("ERROR: Too large a number.");
 }
@@ -286,4 +297,9 @@ const char	*BitcoinExchange::NumberIsToLarge::what() const throw()
 const char	*BitcoinExchange::NegativeNumber::what() const throw()
 {
 	return ("ERROR: not a positive number.");
+}
+
+const char	*BitcoinExchange::DateIsTooLittle::what() const throw()
+{
+	return ("ERROR: Date is smaller than any possible date! ");
 }

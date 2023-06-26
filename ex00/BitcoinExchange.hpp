@@ -6,12 +6,12 @@
 /*   By: lkavalia <lkavalia@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 10:57:23 by lkavalia          #+#    #+#             */
-/*   Updated: 2023/06/14 14:01:01 by lkavalia         ###   ########.fr       */
+/*   Updated: 2023/06/26 05:45:36 by lkavalia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	RPN_HPP
-# define	RPN_HPP
+#ifndef	BITCOINEXCHANGE_HPP
+# define	BITCOINEXCHANGE_HPP
 
 # include	<map>
 # include	<string>
@@ -59,7 +59,13 @@ class	BitcoinExchange
 			virtual	const char	*what() const throw();
 		};
 		
-		class	NumberIsToLarge: public std::exception
+		class	NumberIsTooLarge: public std::exception
+		{
+		public:
+			virtual const char	*what() const throw();
+		};
+		
+		class	DateIsTooLittle: public std::exception
 		{
 		public:
 			virtual const char	*what() const throw();
@@ -68,6 +74,8 @@ class	BitcoinExchange
 		BitcoinExchange(const BitcoinExchange& other);
 		BitcoinExchange&	operator=(const BitcoinExchange& other);
 		std::map<std::string, double>	_database;
+		std::string						_smallest_possible_date;
+		std::string						_largest_possible_date;
 };
 
 //Colors	===========================
